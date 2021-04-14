@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<m_Flag_Rotate>0</m_Flag_Rotate>
+<m_Flag_Rotate90>1</m_Flag_Rotate90>
+<m_Flag_FlipX>1</m_Flag_FlipX>
+<m_Flag_FlipY>1</m_Flag_FlipY>
+<m_Flag_FlipXY>1</m_Flag_FlipXY>
+<m_Flag_Crop>0</m_Flag_Crop>
+<m_Flag_Blur>0</m_Flag_Blur>
+<m_Flag_Contrast>0</m_Flag_Contrast>
+<m_Flag_Brightness>0</m_Flag_Brightness>
+<m_Flag_Noise>0</m_Flag_Noise>
+<m_Flag_Sharpen>0</m_Flag_Sharpen>
+<m_Rotate_Step>18</m_Rotate_Step>
+<m_Crop_Scale>8.0000000000000004e-001</m_Crop_Scale>
+<m_Contrast_Max>60</m_Contrast_Max>
+<m_Contrast_Step>20</m_Contrast_Step>
+<m_Brightness_Max>60</m_Brightness_Max>
+<m_Brightness_Step>20</m_Brightness_Step>
+<m_Other_Path_Flag>1</m_Other_Path_Flag>
+<m_Sharpen_Thre>15.</m_Sharpen_Thre>
+<m_Sharpen_Amount>2.</m_Sharpen_Amount>
+<m_Val_Scale>15</m_Val_Scale>
+<m_Other_Path>"../temp/data"</m_Other_Path>
+</opencv_storage>
