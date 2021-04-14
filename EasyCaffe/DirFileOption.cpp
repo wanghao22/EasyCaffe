@@ -182,7 +182,7 @@ std::string DirFile::GetFatherDir(std::string str)
 		dir = str;
 	d1 = dir.find_last_of("\\");
 	d2 = dir.find_last_of("/");
-	dir = dir.substr(0, max(d1, d2));
+	dir = dir.substr(0, MAX(d1, d2));
 	return dir;
 }
 

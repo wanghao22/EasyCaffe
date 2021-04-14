@@ -938,13 +938,6 @@ void CEasyCaffeDlg::ShowMatImg(cv::Mat src, int Dlgitem, const char* str)
 	cv::imshow(str, dst);
 }
 
-//显示空白图像
-//void CEasyCaffeDlg::ShowNoneImg()
-//{
-//	cv::Mat white(512, 512, CV_8UC3, cvScalarAll(0xff));
-//	ShowMatImg(white, IDC_LABLEIMG_SHOW, m_win1);
-//}
-
 //遍历所有文件，会查找子目录
 void CEasyCaffeDlg::findFile(std::string path, std::vector<std::string>& res)
 {
@@ -1135,7 +1128,6 @@ void CEasyCaffeDlg::OnBnClickedEnhanceAndTrain()
 	wnd.m_xml_file = m_img_enhance_xml;
 	auto rc = wnd.DoModal();
 	if (rc == IDOK){
-		WriteXML();
 		train_tools.m_Flag_Rotate = wnd.m_Flag_Rotate;
 		train_tools.m_Flag_Rotate90 = wnd.m_Flag_Rotate90;
 		train_tools.m_Flag_FlipXY = wnd.m_Flag_FlipXY;
@@ -1185,6 +1177,7 @@ void CEasyCaffeDlg::OnBnClickedEnhanceAndTrain()
 		WriteTrainProto(sz);
 		WriteDeployProto(sz);
 		OnBnClickedMakeLabelFile();
+		WriteXML();
 
 		AfxBeginThread(EnhanceImage_Thread, this);
 	}
@@ -1201,6 +1194,26 @@ void CEasyCaffeDlg::OnBnClickedSaveXml()
 void CEasyCaffeDlg::OnBnClickedMakeLabelFile()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	std::vector<BOOL> have_flag;
+	for (auto i : m_labels)
+		have_flag.push_back(FALSE);
+	int label_len = (int)m_labels.size();
+	for (auto it : m_img_labels){
+		for (int i = 0; i < label_len; i++)
+			if (it == m_labels[i])
+				have_flag[i] = TRUE;
+	}
+	for (int i = label_len - 1; i > -1; i--){
+		if (!have_flag[i])
+		{
+			std::string spath = DirAddSubdir(m_data_path, m_labels[i]);
+			RemoveDirectoryA(spath.c_str());
+			m_labels.erase(m_labels.begin() + i);
+		}
+	}
+	ReflashBox();
+	OnBnClickedSaveXml();
+
 	std::string label_file = DirAddSubdir(m_project_path, "label.txt");
 	std::ofstream ofs;
 	ofs.open(label_file);

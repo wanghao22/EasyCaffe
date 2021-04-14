@@ -80,8 +80,6 @@ private:
 	void ShowMatImg(cv::Mat src, int Dlgitem, const char* str);
 	//打开项目——实体
 	void OpenProject(std::string file);
-	//显示空白图像
-	//void ShowNoneImg();
 	//删除文件夹及其子文件
 	void DeleteDirectory(CString sDirName);
 	//删除标签——实体

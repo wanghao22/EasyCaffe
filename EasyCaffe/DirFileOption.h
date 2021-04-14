@@ -4,6 +4,14 @@
 #include <iostream>
 #include <string>
 
+#ifndef MAX
+#define MAX(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef MIN
+#define MIN(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
 namespace DirFile {
 	//文件夹或者文件是否存在
 	bool IsExisteDir(std::string path);
