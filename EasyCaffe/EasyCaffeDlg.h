@@ -89,12 +89,15 @@ private:
 	cv::Mat m_src;
 	cv::Mat m_white;
 public:
-	//图像Size
-	int m_size_w, m_size_h;
 	//线程调整按钮功能
 	void DuringThreadBtn(bool flag);
 	ImgEnhance train_tools;
+	//图像Size
+	int m_size_w, m_size_h;
 	int GetSize(cv::Mat src);
+	//图像通道数
+	int m_channel;
+	int GetChannels(cv::Mat src);
 	std::string m_project_path;
 	std::string m_data_path;
 	//标签种类

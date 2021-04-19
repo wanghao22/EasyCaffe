@@ -85,6 +85,9 @@ UINT LoadImage_Thread(PVOID pParam)
 			resize(src, src, cv::Size(pWnd->m_size_w, pWnd->m_size_h));
 			imwrite(temp[i], src);
 		}
+		int rc = pWnd->GetChannels(src);
+		if (rc != -1)
+			cv::cvtColor(src, src, rc);
 		pWnd->m_full_path.push_back(temp[i]);
 		pWnd->m_path.push_back(paths);
 		pWnd->m_name.push_back(names);
@@ -153,6 +156,7 @@ CEasyCaffeDlg::CEasyCaffeDlg(CWnd* pParent /*=NULL*/)
 	, m_labels_cnt(0)
 	, m_size_w(0)
 	, m_size_h(0)
+	, m_channel(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -454,7 +458,8 @@ void CEasyCaffeDlg::WriteDeployProto(int cnt)
 			char data[LINE_LENGTH];
 			ifs.getline(data, LINE_LENGTH);
 			if (rows == 6)
-				ofs << "  input_param { shape: { dim: 1 dim: 3 dim: " << m_size_w << " dim: " << m_size_h << " } }" << std::endl;
+				ofs << "  input_param { shape: { dim: 1 dim: " << m_channel << " dim: " 
+				<< m_size_w << " dim: " << m_size_h << " } }" << std::endl;
 			else if (rows == 205)
 				ofs << "    num_output: " << cnt << "  #输出几类" << std::endl;
 			else
@@ -708,6 +713,7 @@ int CEasyCaffeDlg::WriteXML(){
 	fs << "Caffe_Model_Path" << m_caffe_model_path;
 	fs << "LMDB_Path" << m_lmdb_path;
 	fs << "Image_Enhance_XML" << m_img_enhance_xml;
+	fs << "Mat_Channel" << m_channel;
 	fs << "SIZE_Width" << m_size_w;
 	fs << "SIZE_Height" << m_size_h;
 	m_labels.clear();
@@ -735,6 +741,7 @@ int CEasyCaffeDlg::ReadXML(std::string file)
 	fs["Caffe_Model_Path"] >> m_caffe_model_path;
 	fs["LMDB_Path"] >> m_lmdb_path;
 	fs["Image_Enhance_XML"] >> m_img_enhance_xml;
+	fs["Mat_Channel"] >> m_channel;
 	fs["SIZE_Width"] >> m_size_w;
 	fs["SIZE_Height"] >> m_size_h;
 	m_labels.clear();
@@ -1019,6 +1026,10 @@ void CEasyCaffeDlg::OnBnClickedAddImage()
 	CFileDialog  dlg(TRUE, NULL, NULL,
 		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ALLOWMULTISELECT, 
 		L"jpg Files(*.jpg)|*.jpg|png Files(*.png)|*.png|bmp Files(*.bmp)|*.bmp|All Files(*.*)|*.*||");
+	dlg.m_ofn.lStructSize = 88;
+	dlg.m_ofn.lpstrFile = new TCHAR[2048];
+	memset(dlg.m_ofn.lpstrFile, 0, 2048);
+	dlg.m_ofn.nMaxFile = 2048;
 	if (dlg.DoModal() == IDOK)
 	{
 		POSITION pos = dlg.GetStartPosition();
@@ -1035,14 +1046,17 @@ void CEasyCaffeDlg::OnBnClickedAddImage()
 			std::string flpath = DirAddSubdir(m_data_path, sname + stype);
 			if (GetSize(src) == 1)
 				resize(src, src, cv::Size(m_size_w, m_size_h));
+			int rc = GetChannels(src);
+			if (rc != -1)
+				cv::cvtColor(src, src, rc);
 			imwrite(flpath, src);
 		}
-	}
 
-	//刷新界面
-	WriteXML();
-	std::string xmlfile = DirAddSubdir(m_project_path, "project.xml");
-	OpenProject(xmlfile);
+		//刷新界面
+		WriteXML();
+		std::string xmlfile = DirAddSubdir(m_project_path, "project.xml");
+		OpenProject(xmlfile);
+	}
 }
 
 
@@ -1087,6 +1101,35 @@ int CEasyCaffeDlg::GetSize(cv::Mat src)
 	return 0;
 }
 
+
+int CEasyCaffeDlg::GetChannels(cv::Mat src)
+{
+	int channel = src.channels();
+	if (m_channel == 0){
+		m_channel = channel;
+		return -1;
+	}
+	else{
+		if (m_channel == channel)
+			return -1;
+		else{
+			if (channel == 4 && m_channel == 1)
+				return cv::COLOR_BGRA2GRAY;
+			else if (channel == 4 && m_channel == 3)
+				return cv::COLOR_BGRA2BGR;
+			else if (channel == 3 && m_channel == 1)
+				return cv::COLOR_BGR2GRAY;
+			else if (channel == 3 && m_channel == 4)
+				return cv::COLOR_BGR2BGRA;
+			else if (channel == 1 && m_channel == 3)
+				return cv::COLOR_GRAY2BGR;
+			else if (channel == 1 && m_channel == 4)
+				return cv::COLOR_GRAY2BGRA;
+		}
+	}
+	return -1;
+}
+
 void CEasyCaffeDlg::OnDropFiles(HDROP hDropInfo)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
@@ -1109,6 +1152,9 @@ void CEasyCaffeDlg::OnDropFiles(HDROP hDropInfo)
 			std::string flpath = DirAddSubdir(m_data_path, sname + stype);
 			if (GetSize(src) == 1)
 				resize(src, src, cv::Size(m_size_w, m_size_h));
+			int rc = GetChannels(src);
+			if (rc != -1)
+				cv::cvtColor(src, src, rc);
 			imwrite(flpath, src);
 		}
 

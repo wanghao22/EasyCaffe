@@ -713,6 +713,7 @@ void ImgEnhance::CmdTrainStart(std::string out_dir)
 	string valtxt = DirAddSubdir(out_dir, "temp\\val.txt");
 	string solver = DirAddSubdir(out_dir, "caffemodel\\solver.prototxt");
 	string bestmdoel = DirAddSubdir(out_dir, "caffemodel\\caffenet_train_iter_10000.caffemodel");
+	outfile << "set GLOG_log_dir==" + datadir << endl;
 	outfile << "rd /s/q " + traindir << endl;
 	outfile << "rd /s/q " + valdir << endl;
 	outfile << convert + " --shuffle --resize_height=0 --resize_width=0 " + datadir + " " + traintxt + " " + traindir << endl;
