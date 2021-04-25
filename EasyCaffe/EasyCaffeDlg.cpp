@@ -748,7 +748,9 @@ int CEasyCaffeDlg::ReadXML(std::string file)
 	auto ffs = fs["LABELS"];
 	for (auto i : ffs)
 		m_labels.push_back(i);
-	if (m_project_path.length() < 1)
+	if (m_project_path.length() < 1 || m_data_path.length() < 1 || 
+		m_caffe_model_path.length() < 1 || m_lmdb_path.length() < 1 || 
+		m_img_enhance_xml.length() < 1)
 		return -1;
 	fs.release();
 	return 0;
