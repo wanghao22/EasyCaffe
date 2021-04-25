@@ -330,7 +330,7 @@ void CEasyCaffeDlg::DoNewProject()
 
 	CopyCaffeModelFile("Enhance.xml");
 	CopyCaffeModelFile("train_val.prototxt");
-	CopyCaffeModelFile("deploy.prototxt");
+	//CopyCaffeModelFile("deploy.prototxt");
 	WriteSolverProto();
 
 	std::string other_path = DirAddSubdir(m_project_path, "temp");
@@ -443,7 +443,7 @@ void CEasyCaffeDlg::WriteTrainProto(int cnt)
 void CEasyCaffeDlg::WriteDeployProto(int cnt)
 {
 	std::string tmp1 = DirAddSubdir(m_caffe_model_path_ori, "deploy.prototxt");
-	std::string tmp2 = DirAddSubdir(m_caffe_model_path, "deploy.prototxt");
+	std::string tmp2 = DirAddSubdir(m_project_path, "deploy.prototxt");
 	std::ifstream ifs;
 	std::ofstream ofs;
 	ifs.open(tmp1);
@@ -457,9 +457,12 @@ void CEasyCaffeDlg::WriteDeployProto(int cnt)
 			const int LINE_LENGTH = 100;
 			char data[LINE_LENGTH];
 			ifs.getline(data, LINE_LENGTH);
-			if (rows == 6)
-				ofs << "  input_param { shape: { dim: 1 dim: " << m_channel << " dim: " 
-				<< m_size_w << " dim: " << m_size_h << " } }" << std::endl;
+			/*if (rows == 4)
+				ofs << "input_dim:" << m_channel << std::endl;
+			else */if (rows == 5)
+				ofs << "input_dim:" << m_size_w << std::endl;
+			else if (rows == 6)
+				ofs << "input_dim:" << m_size_h << std::endl;
 			else if (rows == 205)
 				ofs << "    num_output: " << cnt << "  #Êä³ö¼¸Àà" << std::endl;
 			else
