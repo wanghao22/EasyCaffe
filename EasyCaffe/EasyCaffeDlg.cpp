@@ -459,11 +459,12 @@ void CEasyCaffeDlg::WriteDeployProto(int cnt)
 			ifs.getline(data, LINE_LENGTH);
 			/*if (rows == 4)
 				ofs << "input_dim:" << m_channel << std::endl;
-			else */if (rows == 5)
+			else */
+			if (rows == 5)
 				ofs << "input_dim:" << m_size_w << std::endl;
 			else if (rows == 6)
 				ofs << "input_dim:" << m_size_h << std::endl;
-			else if (rows == 205)
+			else if (rows == 204)
 				ofs << "    num_output: " << cnt << "  #Êä³ö¼¸Àà" << std::endl;
 			else
 				ofs << data << std::endl;
