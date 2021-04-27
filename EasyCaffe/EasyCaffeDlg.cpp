@@ -655,7 +655,7 @@ void CEasyCaffeDlg::OnClose()
 //获取EXE的安装目录
 void CEasyCaffeDlg::GetThisDir()
 {
-	wchar_t dd[256];
+	TCHAR dd[256];
 	GetModuleFileName(NULL, dd, 256);
 	if (dd == NULL)
 	{
@@ -1172,7 +1172,7 @@ void CEasyCaffeDlg::OnDropFiles(HDROP hDropInfo)
 	CDialogEx::OnDropFiles(hDropInfo);
 }
 
-
+//增强训练按钮
 void CEasyCaffeDlg::OnBnClickedEnhanceAndTrain()
 {
 	// TODO:  在此添加控件通知处理程序代码

@@ -233,20 +233,34 @@ void ImgEnhance::Do_rotate(cv::Mat src, cv::Mat & dst, double angle)
 
 void ImgEnhance::Do_Vintensity(cv::Mat src, cv::Mat & dst, int value)
 {
+	cv::Mat bgr;
 	if (src.channels() == 1)
+		cvtColor(src, bgr, COLOR_GRAY2BGR);
+	else if (src.channels() == 4)
+		cvtColor(src, bgr, COLOR_BGRA2BGR);
+	else if (src.channels() == 3)
+		bgr = src.clone();
+	else
 		return;
-	cvtColor(src, dst, CV_BGR2HSV);
-	for (int i = 0; i < dst.rows; i++)
+	cv::Mat hsv;
+	cvtColor(bgr, hsv, CV_BGR2HSV);
+	for (int i = 0; i < hsv.rows; i++)
 	{
-		for (int j = 0; j < dst.cols; j++)
+		for (int j = 0; j < hsv.cols; j++)
 		{
 			if (value > 0)
-				dst.at<Vec3b>(i, j)[2] = MIN(dst.at<Vec3b>(i, j)[2] + value, 255);
+				hsv.at<Vec3b>(i, j)[2] = MIN(hsv.at<Vec3b>(i, j)[2] + value, 255);
 			else
-				dst.at<Vec3b>(i, j)[2] = MAX(dst.at<Vec3b>(i, j)[2] + value, 0);
+				hsv.at<Vec3b>(i, j)[2] = MAX(hsv.at<Vec3b>(i, j)[2] + value, 0);
 		}
 	}
-	cvtColor(dst, dst, CV_HSV2BGR);
+	cvtColor(hsv, bgr, CV_HSV2BGR);
+	if (src.channels() == 1)
+		cvtColor(bgr, dst, COLOR_BGR2GRAY);
+	else if (src.channels() == 4)
+		cvtColor(bgr, dst, COLOR_BGR2BGRA);
+	else if (src.channels() == 3)
+		dst = bgr.clone();
 }
 
 void ImgEnhance::Do_Sharpen(cv::Mat src, cv::Mat & dst, double threshold, double amount)
